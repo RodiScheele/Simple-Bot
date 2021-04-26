@@ -10,6 +10,10 @@ class Ping(commands.Cog):
     async def ping(self, context):
         await context.send('Pong!')
 
+    @commands.command(name='pong')
+    async def ping(self, context):
+        await context.send('Ping!')
+
 
 def setup(bot):
     bot.add_cog(Ping(bot))
