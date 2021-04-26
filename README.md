@@ -1,1 +1,3 @@
-Simple Bot
+**Simple Bot**
+
+A simple Discord bot.
