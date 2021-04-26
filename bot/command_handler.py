@@ -3,7 +3,7 @@ import os
 
 # Load all commands from folder
 def load(client):
-    for file in os.listdir('./commands/'):
+    for file in os.listdir('commands/'):
         if file.endswith('.py'):
             try:
                 client.load_extension(f'commands.{file[:-3]}')
