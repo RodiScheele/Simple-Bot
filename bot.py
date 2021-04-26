@@ -1,7 +1,7 @@
 import os
 import sys
-
 import discord
+from discord.ext import commands as cd
 import logging
 
 logger = logging.getLogger('discord')
@@ -15,18 +15,16 @@ if os.getenv('DISCORD_TOKEN') != 0:
 else:
     sys.exit('No environment token found, please configure this first.')
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+client = cd.Bot(command_prefix='!', description='Bot', intents=intents)
 
 @client.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print('Logged in as {0.user}'.format(client))
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+@client.command(name='ping')
+async def ping(ctx):
+    await ctx.send('Pong!')
 
 client.run(TOKEN)
