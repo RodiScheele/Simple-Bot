@@ -7,4 +7,4 @@ else:
     TOKEN = ""
 PREFIX = "!"
 DESCRIPTION = "I am a humble bot."
-
+APPLICATION_ID = "833460245455044618"
