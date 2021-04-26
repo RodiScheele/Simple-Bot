@@ -11,7 +11,7 @@ class Ping(commands.Cog):
         await context.send('Pong!')
 
     @commands.command(name='pong')
-    async def ping(self, context):
+    async def pong(self, context):
         await context.send('Ping!')
 
 
