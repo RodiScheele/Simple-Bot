@@ -9,7 +9,7 @@ import command_handler
 if not os.path.isfile("files/config.py"):
     sys.exit("'config.py' not found! Please add it and try again.")
 else:
-    from bot.files import config
+    from files import config
 
 # Set up logging
 logger = logging.getLogger('discord')
