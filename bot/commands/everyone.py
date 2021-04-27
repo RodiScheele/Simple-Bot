@@ -8,11 +8,12 @@ class Everyone(commands.Cog):
     @commands.command(name='everyone', description='Pings everyone by their name, alternative to @everyone')
     async def everyone(self, context):
         """Pings everyone by their name"""
-        member_list = "PING PING PING "
-        for member in context.message.guild.members:
-            if member.id != self.bot.user.id:
-                member_list += "<@" + str(member.id) + "> "
-        await context.message.channel.send(member_list)
+        if not context.author.bot:
+            member_list = "PING PING PING "
+            for member in context.message.guild.members:
+                if member.id and not member.bot:
+                    member_list += "<@" + str(member.id) + "> "
+            await context.message.channel.send(member_list)
 
 
 def setup(bot):

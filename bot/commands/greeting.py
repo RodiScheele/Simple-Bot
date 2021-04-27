@@ -14,14 +14,15 @@ class Greetings(commands.Cog):
             await channel.send('Welcome {0.mention}. I sure hope that you are not some kind of imposter?'.format(member))
 
     @commands.command(name="hello", descripion='Says hello!')
-    async def hello(self, ctx, *, member: discord.Member = None):
+    async def hello(self, context, *, member: discord.Member = None):
         """Says hello"""
-        member = member or ctx.author
-        if self._last_member is None or self._last_member.id != member.id:
-            await ctx.send('Hello {0.name}~'.format(member))
-        else:
-            await ctx.send('Hello {0.name}... This feels familiar.'.format(member))
-        self._last_member = member
+        if not context.author.bot:
+            member = member or context.author
+            if self._last_member is None or self._last_member.id != member.id:
+                await context.send('Hello {0.name}~'.format(member))
+            else:
+                await context.send('Hello {0.name}... This feels familiar.'.format(member))
+            self._last_member = member
 
 
 def setup(bot):
