@@ -5,8 +5,9 @@ class Insult(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='insult')
+    @commands.command(name='insult', description="Insults you or someone else with '!insult [optional:name]'")
     async def insult(self, context, *args):
+        """Insults you or someone else"""
         insult = get_insult()
         output_text = None
         if len(args) == 0 or len(args) > 1:

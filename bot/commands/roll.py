@@ -6,8 +6,11 @@ class Roll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='roll')
+    @commands.command(name='roll', description="Roll a dice. The default dice is set between 1 and 100, you can "
+                                               "provide arguments to alter the dice with '!roll [maximum_value]' or "
+                                               "'!roll [minimum_value] [maximum_value]'")
     async def roll(self, context, *args):
+        """Roll a dice"""
         output_text = None
 
         if len(args) == 0:

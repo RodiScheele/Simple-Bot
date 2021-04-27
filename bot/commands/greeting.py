@@ -13,7 +13,7 @@ class Greetings(commands.Cog):
         if channel is not None:
             await channel.send('Welcome {0.mention}. I sure hope that you are not some kind of imposter?'.format(member))
 
-    @commands.command(name="hello")
+    @commands.command(name="hello", descripion='Says hello!')
     async def hello(self, ctx, *, member: discord.Member = None):
         """Says hello"""
         member = member or ctx.author
