@@ -19,7 +19,7 @@ client = commands.Bot(command_prefix=config.PREFIX, description=config.DESCRIPTI
 
 
 # Load all commands function
-def load(bot):
+def load_commands(bot):
     for file in os.listdir('packages/command/'):
         if file.endswith('.py') and not file.endswith('__init__.py'):
             try:
@@ -35,7 +35,7 @@ def load(bot):
 async def on_ready():
     print("Logged in as {0.user}".format(client))
     # Load the command_handler once the bot runs
-    load(client)
+    load_commands(client)
 
 
 # Start the bot
