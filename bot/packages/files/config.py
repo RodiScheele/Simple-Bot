@@ -8,3 +8,4 @@ else:
 PREFIX = "!"
 DESCRIPTION = "I am a humble bot."
 APPLICATION_ID = "833460245455044618"
+DB_STRING = "mongodb://localhost:27017/"

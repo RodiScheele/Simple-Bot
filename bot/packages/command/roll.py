@@ -1,10 +1,16 @@
 from discord.ext import commands
 from random import *
+from datetime import date
+import pymongo
+from ..files import config
 
 
 class Roll(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot, daily_roll_val=0):
         self.bot = bot
+        self.daily_roll_val = daily_roll_val
+        self.daily_roll_date = date.today()
+        self.daily_roll_user = None
 
     @commands.command(name='roll', description="Roll a dice. The default dice is set between 1 and 100, you can "
                                                "provide arguments to alter the dice with '!roll [maximum_value]' or "
@@ -37,6 +43,40 @@ class Roll(commands.Cog):
 
             await context.send(output_text)
 
+    @commands.command(name='dailyroll', description="Roll a dice between 1 and 100 and try to win the daily roll!")
+    async def daily_roll(self, context):
+        """Daily roll competition"""
+        if not context.author.bot:
+            output_text = None
+
+            value = randint(1, 100)
+            if value == self.daily_roll_val:
+                output_text = "Congrats!"
+            else:
+                output_text = "Sad :("
+
+    @commands.command(name='setdailyroll', description="Set the value for the daily roll.")
+    async def set_daily_roll(self, context, arg1):
+        """Set the value for the daily roll competition"""
+        if not context.author.bot:
+            output_text = None
+            if is_int(arg1):
+                output_text = "yes"
+            else:
+                output_text = "no"
+
+    @commands.command(name='getdailyroll', description="Get the value for the daily roll.")
+    async def get_daily_roll(self, context):
+        """Get the value for the daily roll competition."""
+        if not context.author.bot:
+            output_text = "The current goal is to roll " + str(self.daily_roll_val) + "."
+
+            myclient = pymongo.MongoClient(config.DB_STRING)
+
+            mndb = myclient["simplebot"]
+            print(mndb.list_collection_names())
+            await context.send(output_text)
+
 
 async def is_int(parameter):
     value = True
@@ -47,6 +87,10 @@ async def is_int(parameter):
 
     return value
 
+
+async def check_user(user):
+
+    return None
 
 def setup(bot):
     bot.add_cog(Roll(bot))
