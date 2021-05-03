@@ -3,8 +3,7 @@ from discord.ext import commands
 import logging
 import os
 from bot.packages.files import config
-import packages.files
-import packages.command
+
 
 # Set up logging
 logger = logging.getLogger('discord')
