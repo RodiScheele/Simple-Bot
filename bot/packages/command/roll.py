@@ -1,16 +1,17 @@
 from discord.ext import commands
 from random import *
-from datetime import date
+from datetime import datetime
 import pymongo
 from ..files import config
+from ..database import roll_db
 
 
 class Roll(commands.Cog):
-    def __init__(self, bot, daily_roll_val=0):
+    def __init__(self, bot):
         self.bot = bot
-        self.daily_roll_val = daily_roll_val
-        self.daily_roll_date = date.today()
-        self.daily_roll_user = None
+        #self.client = pymongo.MongoClient(config.DB_STRING)
+        #self.database = config.DB_NAME
+        #self.value_collection = config.DB_COLLECTION_ROLL_VALUE
 
     @commands.command(name='roll', description="Roll a dice. The default dice is set between 1 and 100, you can "
                                                "provide arguments to alter the dice with '!roll [maximum_value]' or "
@@ -50,31 +51,36 @@ class Roll(commands.Cog):
             output_text = None
 
             value = randint(1, 100)
-            if value == self.daily_roll_val:
+            if value == 0:
                 output_text = "Congrats!"
             else:
                 output_text = "Sad :("
+            await context.send(output_text)
 
     @commands.command(name='setdailyroll', description="Set the value for the daily roll.")
     async def set_daily_roll(self, context, arg1):
         """Set the value for the daily roll competition"""
         if not context.author.bot:
             output_text = None
-            if is_int(arg1):
-                output_text = "yes"
+            if await is_int(arg1):
+                if 0 < int(arg1) <= 100:
+                    roll_db.create_or_update_roll_value(context.guild.id, int(arg1), datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f'), context.author.id)
+                    output_text = "I've set the daily roll value to " + arg1 + ". Time to roll!"
+                else:
+                    output_text = "You must insert a value between 1 and 100."
             else:
-                output_text = "no"
+                output_text = "I don't understand what you are trying to do. Try setting a value with !setdailyroll [number]"
+            await context.send(output_text)
 
     @commands.command(name='getdailyroll', description="Get the value for the daily roll.")
     async def get_daily_roll(self, context):
         """Get the value for the daily roll competition."""
         if not context.author.bot:
-            output_text = "The current goal is to roll " + str(self.daily_roll_val) + "."
-
-            myclient = pymongo.MongoClient(config.DB_STRING)
-
-            mndb = myclient["simplebot"]
-            print(mndb.list_collection_names())
+            value = roll_db.get_roll_value(context.guild.id)
+            if value is not None:
+                output_text = "The current value has been set by <@" + str(value['user']) + "> and is: " + str(value['value']) + ". Try to roll this number with !dailyroll"
+            else:
+                output_text = "Daily roll value has not been set yet. Use !setdailyroll [number] to set a value first."
             await context.send(output_text)
 
 
@@ -87,10 +93,6 @@ async def is_int(parameter):
 
     return value
 
-
-async def check_user(user):
-
-    return None
 
 def setup(bot):
     bot.add_cog(Roll(bot))
