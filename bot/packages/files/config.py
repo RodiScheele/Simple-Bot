@@ -10,5 +10,7 @@ DESCRIPTION = "I am a humble bot."
 APPLICATION_ID = "833460245455044618"
 DB_STRING = "mongodb://localhost:27017/"
 DB_NAME = "simplebot"
+# DB collections
 DB_COLLECTION_DAILY_ROLL_VALUE = "dailyroll_value"
-DB_COLLECTION_DAILY_ROLL_HISTORY = ""
+DB_COLLECTION_DAILY_ROLL_HISTORY = "dailyroll_roll_history"
+DB_COLLECTION_DAILY_ROLL_SCORE = "dailyroll_score"

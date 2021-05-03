@@ -1,6 +1,6 @@
 from discord.ext import commands
 from random import *
-from datetime import datetime
+from datetime import date
 import pymongo
 from ..files import config
 from ..database import roll_db
@@ -46,12 +46,29 @@ class Roll(commands.Cog):
         """Daily roll competition"""
         if not context.author.bot:
             output_text = None
+            if roll_db.get_roll_value(context.guild.id) is not None:
+                roll_goal = roll_db.get_roll_value(context.guild.id)['value']
+                dte = date.today().strftime('%Y-%m-%d')
+                roll_history = roll_db.get_roll_history(context.guild.id, dte)
+                not_rolled = True
+                prev_value = None
+                for user in roll_history:
+                    if int(user['user_id']) == context.author.id:
+                        not_rolled = False
+                        prev_value = user['value']
+                        break
 
-            value = randint(1, 100)
-            if value == 0:
-                output_text = "Congrats!"
+                if not_rolled:
+                    value = randint(1, 100)
+                    roll_db.add_roll_history(context.guild.id, dte, context.author.id, value)
+                    if value == roll_goal:
+                        output_text = "You rolled " + str(value) + ". Holy shit you did it, you absolute madman! It's time for a party @everyone, <@" + str(context.author.id) + "> is paying!"
+                    else:
+                        output_text = "You rolled " + str(value) + ". The goal was to roll " + str(roll_goal) + ', better luck tomorrow.'
+                elif not not_rolled:
+                    output_text = "You have already rolled " + str(prev_value) + " today, try again tomorrow!"
             else:
-                output_text = "Sad :("
+                output_text = "Daily roll value has not been set yet. Use !setdailyroll [number] to set a value first."
             await context.send(output_text)
 
     @commands.command(name='setdailyroll', description="Set the value for the daily roll.")
@@ -61,8 +78,7 @@ class Roll(commands.Cog):
             output_text = None
             if await is_int(arg1):
                 if 0 < int(arg1) <= 100:
-                    dte = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
-                    roll_db.create_or_update_roll_value(context.guild.id, int(arg1), dte, context.author.id)
+                    roll_db.create_or_update_roll_value(context.guild.id, int(arg1), date.today().strftime('%Y-%m-%d'), context.author.id)
                     output_text = "I've set the daily roll value to " + arg1 + ". Time to roll!"
                 else:
                     output_text = "You must insert a value between 1 and 100."
@@ -76,7 +92,7 @@ class Roll(commands.Cog):
         if not context.author.bot:
             value = roll_db.get_roll_value(context.guild.id)
             if value is not None:
-                output_text = "The current value has been set by <@" + str(value['user']) + "> and is: " + str(value['value']) + ". Try to roll this number with !dailyroll"
+                output_text = "The current value has been set by <@" + str(value['user_id']) + "> and is: " + str(value['value']) + ". Try to roll this number with !dailyroll"
             else:
                 output_text = "Daily roll value has not been set yet. Use !setdailyroll [number] to set a value first."
             await context.send(output_text)
