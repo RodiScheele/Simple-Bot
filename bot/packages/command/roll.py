@@ -62,7 +62,8 @@ class Roll(commands.Cog):
                     value = randint(1, 100)
                     roll_db.add_roll_history(context.guild.id, dte, context.author.id, value)
                     if value == roll_goal:
-                        output_text = "You rolled " + str(value) + ". Holy shit you did it, you absolute madman! It's time for a party @everyone, <@" + str(context.author.id) + "> is paying!"
+                        score = await add_point(context)
+                        output_text = "You rolled " + str(value) + ". Holy shit, you actually did it, you absolute madman! It's time for a party @everyone, <@" + str(context.author.id) + "> is paying! Your score is now " + str(score) + " points."
                     else:
                         output_text = "You rolled " + str(value) + ". The goal was to roll " + str(roll_goal) + ', better luck tomorrow.'
                 elif not not_rolled:
@@ -106,6 +107,18 @@ async def is_int(parameter):
         value = False
 
     return value
+
+
+async def add_point(context):
+    user_score = roll_db.get_user_score(context.guild.id, context.author.id)
+    score = None
+    if user_score is not None:
+        score = int(user_score['score']) + 1
+        roll_db.create_or_update_score(context.guild.id, context.author.id, score)
+    else:
+        score = 1
+        roll_db.create_or_update_score(context.guild.id, context.author.id, score)
+    return score
 
 
 def setup(bot):

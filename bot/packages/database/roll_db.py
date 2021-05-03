@@ -39,3 +39,25 @@ def add_roll_history(server_id, date, user_id, value):
                     'date': date,
                     'value': value}
     col_hist.insert_one(insert_value)
+
+
+def get_user_score(server_id, user_id):
+    value = col_score.find_one(filter={'server_id': server_id,
+                                       'user_id': user_id})
+    return value
+
+
+def get_server_score(server_id):
+    value = col_score.find(filter={'server_id': server_id})
+    return value
+
+
+def create_or_update_score(server_id, user_id, score):
+    if col_score.find_one(filter={'server_id': server_id, 'user_id': user_id}) is not None:
+        update_value = {'$set': {'score': score}}
+        col_score.update_one(filter={'server_id': server_id, 'user_id': user_id}, update=update_value)
+    else:
+        insert_value = {'user_id': user_id,
+                        'server_id': server_id,
+                        'score': score}
+        col_score.insert_one(insert_value)
