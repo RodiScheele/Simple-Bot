@@ -1,9 +1,8 @@
 from discord.ext import commands
 from random import *
 from datetime import date
-import pymongo
-from ..files import config
 from ..database import roll_db
+from operator import itemgetter
 
 
 class Roll(commands.Cog):
@@ -61,7 +60,7 @@ class Roll(commands.Cog):
                 if not_rolled:
                     value = randint(1, 100)
                     roll_db.add_roll_history(context.guild.id, dte, context.author.id, value)
-                    if value == value:
+                    if value == roll_goal:
                         score = await add_point(context)
                         output_text = "You rolled " + str(value) + ". Holy shit, you actually did it, you absolute madman! It's time for a party @everyone, <@" + str(context.author.id) + "> is paying! Your score is now " + str(score) + " points."
                     else:
@@ -99,16 +98,16 @@ class Roll(commands.Cog):
             await context.send(output_text)
 
 
-    @commands.command(name='dailyrollscore', description="See the current scores for !dailyroll.")
-    async def get_daily_roll(self, context):
-        """Get the value for the daily roll competition."""
+    @commands.command(name='dailyrollscore', description="See the current highscores for !dailyroll.")
+    async def get_daily_roll_score(self, context):
+        """See the current highscores for !dailyroll."""
         if not context.author.bot:
-            value = roll_db.get_roll_value(context.guild.id)
-            if value is not None:
-                output_text = "The current value has been set by <@" + str(value['user_id']) + "> and is: " + str(value['value']) + ". Try to roll this number with !dailyroll"
-            else:
-                output_text = "Daily roll value has not been set yet. Use !setdailyroll [number] to set a value first."
-            await context.send(output_text)
+            user_scores = roll_db.get_server_score(context.guild.id)
+            user_scores_sorted = sorted(user_scores, key=itemgetter('score'), reverse=True)
+            await context.send("High scores:")
+            for user in user_scores_sorted:
+                await context.send(str(user['score']) + " points - " + str(user['user_name']))
+            await context.send("End of my list.")
 
 
 async def is_int(parameter):
