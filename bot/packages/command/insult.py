@@ -1,5 +1,6 @@
 from discord.ext import commands
 import random
+from pathlib import Path
 
 
 class Insult(commands.Cog):
@@ -29,7 +30,8 @@ class Insult(commands.Cog):
 
 # TODO: Optimize for memory.
 def get_insult():
-    lines = open('./files/insult_list.txt').read().splitlines()
+    path = Path(__file__).parent / '../files/insult_list.txt'
+    lines = open(path).read().splitlines()
     line = random.choice(lines)
     return line
 
