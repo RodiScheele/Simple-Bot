@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import logging
 import os
-from bot.packages.files import config
+from packages.files import config
 
 
 # Set up logging
