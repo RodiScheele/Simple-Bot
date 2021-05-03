@@ -61,7 +61,7 @@ class Roll(commands.Cog):
                 if not_rolled:
                     value = randint(1, 100)
                     roll_db.add_roll_history(context.guild.id, dte, context.author.id, value)
-                    if value == roll_goal:
+                    if value == value:
                         score = await add_point(context)
                         output_text = "You rolled " + str(value) + ". Holy shit, you actually did it, you absolute madman! It's time for a party @everyone, <@" + str(context.author.id) + "> is paying! Your score is now " + str(score) + " points."
                     else:
@@ -99,6 +99,18 @@ class Roll(commands.Cog):
             await context.send(output_text)
 
 
+    @commands.command(name='dailyrollscore', description="See the current scores for !dailyroll.")
+    async def get_daily_roll(self, context):
+        """Get the value for the daily roll competition."""
+        if not context.author.bot:
+            value = roll_db.get_roll_value(context.guild.id)
+            if value is not None:
+                output_text = "The current value has been set by <@" + str(value['user_id']) + "> and is: " + str(value['value']) + ". Try to roll this number with !dailyroll"
+            else:
+                output_text = "Daily roll value has not been set yet. Use !setdailyroll [number] to set a value first."
+            await context.send(output_text)
+
+
 async def is_int(parameter):
     value = True
     try:
@@ -114,10 +126,10 @@ async def add_point(context):
     score = None
     if user_score is not None:
         score = int(user_score['score']) + 1
-        roll_db.create_or_update_score(context.guild.id, context.author.id, score)
+        roll_db.create_or_update_score(context.guild.id, context.author.id, score, context.author.nick)
     else:
         score = 1
-        roll_db.create_or_update_score(context.guild.id, context.author.id, score)
+        roll_db.create_or_update_score(context.guild.id, context.author.id, score, context.author.nick)
     return score
 
 

@@ -52,12 +52,14 @@ def get_server_score(server_id):
     return value
 
 
-def create_or_update_score(server_id, user_id, score):
+def create_or_update_score(server_id, user_id, score, user_name):
     if col_score.find_one(filter={'server_id': server_id, 'user_id': user_id}) is not None:
-        update_value = {'$set': {'score': score}}
+        update_value = {'$set': {'score': score,
+                                 'user_name': user_name}}
         col_score.update_one(filter={'server_id': server_id, 'user_id': user_id}, update=update_value)
     else:
         insert_value = {'user_id': user_id,
                         'server_id': server_id,
-                        'score': score}
+                        'score': score,
+                        'user_name': user_name}
         col_score.insert_one(insert_value)
