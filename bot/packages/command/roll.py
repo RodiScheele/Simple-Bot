@@ -9,9 +9,6 @@ from ..database import roll_db
 class Roll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        #self.client = pymongo.MongoClient(config.DB_STRING)
-        #self.database = config.DB_NAME
-        #self.value_collection = config.DB_COLLECTION_ROLL_VALUE
 
     @commands.command(name='roll', description="Roll a dice. The default dice is set between 1 and 100, you can "
                                                "provide arguments to alter the dice with '!roll [maximum_value]' or "
@@ -64,7 +61,8 @@ class Roll(commands.Cog):
             output_text = None
             if await is_int(arg1):
                 if 0 < int(arg1) <= 100:
-                    roll_db.create_or_update_roll_value(context.guild.id, int(arg1), datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f'), context.author.id)
+                    dte = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+                    roll_db.create_or_update_roll_value(context.guild.id, int(arg1), dte, context.author.id)
                     output_text = "I've set the daily roll value to " + arg1 + ". Time to roll!"
                 else:
                     output_text = "You must insert a value between 1 and 100."
