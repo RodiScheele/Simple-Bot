@@ -34,6 +34,8 @@ def load_commands(bot):
 @client.event
 async def on_ready():
     print("Logged in as {0.user}".format(client))
+    await client.change_presence(
+        activity=discord.Activity(type=discord.ActivityType.playing, name='!help | Pretty sus'))
     # Load the command_handler once the bot runs
     load_commands(client)
 
