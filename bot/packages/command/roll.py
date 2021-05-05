@@ -62,9 +62,17 @@ class Roll(commands.Cog):
                     roll_db.add_roll_history(context.guild.id, dte, context.author.id, value)
                     if value == roll_goal:
                         score = await add_point(context)
-                        output_text = "You rolled " + str(value) + ". Holy shit, you actually did it, you absolute madman! It's time for a party @everyone, <@" + str(context.author.id) + "> is paying! Your score is now " + str(score) + " points."
+                        point_str = "points"
+                        if score == 1:
+                            point_str = "point"
+
+                        output_text = "You rolled " + str(
+                            value) + ". Holy shit, you actually did it, you absolute madman! It's time for a party " \
+                                     "@everyone, <@" + str(context.author.id) + "> is paying! Your score is now " \
+                                     + str(score) + point_str + "."
                     else:
-                        output_text = "You rolled " + str(value) + ". The goal was to roll " + str(roll_goal) + ', better luck tomorrow.'
+                        output_text = "You rolled " + str(value) + ". The goal was to roll " + str(
+                            roll_goal) + ', better luck tomorrow.'
                 elif not not_rolled:
                     output_text = "You have already rolled " + str(prev_value) + " today, try again tomorrow!"
             else:
@@ -78,12 +86,14 @@ class Roll(commands.Cog):
             output_text = None
             if await is_int(arg1):
                 if 0 < int(arg1) <= 100:
-                    roll_db.create_or_update_roll_value(context.guild.id, int(arg1), date.today().strftime('%Y-%m-%d'), context.author.id)
+                    roll_db.create_or_update_roll_value(context.guild.id, int(arg1), date.today().strftime('%Y-%m-%d'),
+                                                        context.author.id)
                     output_text = "I've set the daily roll value to " + arg1 + ". Time to roll!"
                 else:
                     output_text = "You must insert a value between 1 and 100."
             else:
-                output_text = "I don't understand what you are trying to do. Try setting a value with !setdailyroll [number]"
+                output_text = "I don't understand what you are trying to do. Try setting a value with !setdailyroll [" \
+                              "number] "
             await context.send(output_text)
 
     @commands.command(name='getdailyroll', description="Get the value for the daily roll.")
@@ -92,11 +102,11 @@ class Roll(commands.Cog):
         if not context.author.bot:
             value = roll_db.get_roll_value(context.guild.id)
             if value is not None:
-                output_text = "The current value has been set by <@" + str(value['user_id']) + "> and is: " + str(value['value']) + ". Try to roll this number with !dailyroll"
+                output_text = "The current value has been set by <@" + str(value['user_id']) + "> and is: " + str(
+                    value['value']) + ". Try to roll this number with !dailyroll"
             else:
                 output_text = "Daily roll value has not been set yet. Use !setdailyroll [number] to set a value first."
             await context.send(output_text)
-
 
     @commands.command(name='dailyrollscore', description="See the current highscores for !dailyroll.")
     async def get_daily_roll_score(self, context):
@@ -106,7 +116,10 @@ class Roll(commands.Cog):
             user_scores_sorted = sorted(user_scores, key=itemgetter('score'), reverse=True)
             await context.send("High scores:")
             for user in user_scores_sorted:
-                await context.send(str(user['score']) + " points - " + str(user['user_name']))
+                point_str = " points"
+                if user['score'] == 1:
+                    point_str = " point"
+                await context.send(str(user['score']) + point_str + " - " + str(user['user_name']))
             await context.send("End of my list.")
 
 
@@ -125,10 +138,9 @@ async def add_point(context):
     score = None
     if user_score is not None:
         score = int(user_score['score']) + 1
-        roll_db.create_or_update_score(context.guild.id, context.author.id, score, context.author.nick)
     else:
         score = 1
-        roll_db.create_or_update_score(context.guild.id, context.author.id, score, context.author.nick)
+    roll_db.create_or_update_score(context.guild.id, context.author.id, score, context.author.nick)
     return score
 
 
