@@ -2,6 +2,7 @@ from discord.ext import commands
 from random import *
 from datetime import date
 from ..database import roll_db
+from ..logic import functions
 from operator import itemgetter
 
 
@@ -21,13 +22,13 @@ class Roll(commands.Cog):
                 value = randint(1, 100)
                 output_text = "Rolling between 1 and 100!\n" + str(value)
             elif len(args) == 1:
-                if await is_int(args[0]):
+                if await functions.is_int(args[0]):
                     value = randint(1, int(args[0]))
                     output_text = "Rolled between 1 and " + args[0] + "!\n" + str(value)
                 else:
                     output_text = "I require a whole number!"
             elif len(args) == 2:
-                if await is_int(args[0]) and await is_int(args[1]):
+                if await functions.is_int(args[0]) and await functions.is_int(args[1]):
                     if int(args[0]) >= int(args[1]):
                         output_text = "The first number can't be larger or equal than the second number!"
                     else:
@@ -84,7 +85,7 @@ class Roll(commands.Cog):
         """Set the value for the daily roll competition"""
         if not context.author.bot:
             output_text = None
-            if await is_int(arg1):
+            if await functions.is_int(arg1):
                 if 0 < int(arg1) <= 100:
                     roll_db.create_or_update_roll_value(context.guild.id, int(arg1), date.today().strftime('%Y-%m-%d'),
                                                         context.author.id)
@@ -121,16 +122,6 @@ class Roll(commands.Cog):
                     point_str = " point"
                 await context.send(str(user['score']) + point_str + " - " + str(user['user_name']))
             await context.send("End of my list.")
-
-
-async def is_int(parameter):
-    value = True
-    try:
-        int(parameter)
-    except ValueError:
-        value = False
-
-    return value
 
 
 async def add_point(context):

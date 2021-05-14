@@ -4,14 +4,14 @@ from discord.ext import commands
 class Symen(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self._last_member = None
 
     # Borrowed from this author: https://github.com/bverpaalen/discord_ping_bot/blob/main/commands/everyone.py
     @commands.command(name='symen', description='What is even the point of this command?')
     async def symen(self, context, *args):
-        """The Symen command (Requested)"""
+        """Deprecated command, use !ping instead."""
         if not context.author.bot:
-            symen_strings = { 'symen', 'dogger', 'pyromancio'}
+            await context.message.channel.send("This command has been deprecated. Try using !ping [username] [amount]")
+            """symen_strings = { 'symen', 'dogger', 'pyromancio'}
             match = False
             output_text = None
             for member in context.message.guild.members:
@@ -35,17 +35,7 @@ class Symen(commands.Cog):
                 else:
                     await context.message.channel.send("What are you trying to do?")
             elif len(args) >= 2:
-                await context.message.channel.send("What are you trying to do?")
-
-
-async def is_int(parameter):
-    value = True
-    try:
-        int(parameter)
-    except ValueError:
-        value = False
-
-    return value
+                await context.message.channel.send("What are you trying to do?")"""
 
 
 def setup(bot):
