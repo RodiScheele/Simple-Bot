@@ -69,7 +69,7 @@ class Roll(commands.Cog):
                         output_text = "You rolled " + str(
                             value) + ". Holy shit, you actually did it, you absolute madman! It's time for a party " \
                                      "@everyone, <@" + str(context.author.id) + "> is paying! Your score is now " \
-                                     + str(score) + point_str + "."
+                                     + str(score) + " " + point_str + "."
                     else:
                         output_text = "You rolled " + str(value) + ". The goal was to roll " + str(
                             roll_goal) + ', better luck tomorrow.'
