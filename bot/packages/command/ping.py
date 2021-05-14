@@ -21,7 +21,7 @@ class Ping(commands.Cog):
             elif len(args) == 2:
                 member = find_user(context, str(args[0]))
                 if member is not None:
-                    if functions.is_int(args[1]):
+                    if await functions.is_int(args[1]):
                         for i in range (0, int(args[1])):
                             await context.send("PING PING PING " + "<@" + str(member) + ">!")
                             if i > 23:
