@@ -140,7 +140,10 @@ async def add_point(context):
         score = int(user_score['score']) + 1
     else:
         score = 1
-    roll_db.create_or_update_score(context.guild.id, context.author.id, score, context.author.nick)
+    name = context.author.nick
+    if name is None:
+        name = context.author.name
+    roll_db.create_or_update_score(context.guild.id, context.author.id, score, name)
     return score
 
 
