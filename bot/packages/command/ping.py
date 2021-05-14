@@ -16,7 +16,7 @@ class Ping(commands.Cog):
                 if member is not None:
                     await context.send("Ping! " + "<@" + str(member) + ">!")
                 else:
-                    await context.send("Could not find the member you are asking for.")
+                    await context.send("I could not find that member.")
             # If 2 arguments are given ping someone his username multiple times (based on parameter)
             elif len(args) == 2:
                 member = find_user(context, str(args[0]))
@@ -30,7 +30,7 @@ class Ping(commands.Cog):
                     else:
                         await context.send("You need to set a number. Try using !ping [username] [amount]")
                 else:
-                    await context.send("Could not find the member you are asking for. Try using !ping [username] [amount]")
+                    await context.send("I could not find that member. Try using !ping [username] [amount]")
             # If none of the correct parameters are given do this.
             else:
                 await context.send("Pong.")
