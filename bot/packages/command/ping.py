@@ -10,18 +10,15 @@ class Ping(commands.Cog):
     async def ping(self, context, *args):
         """Do a ping!"""
         if not context.author.bot:
-            # If no arguments are given do a simple 'Pong'.
-            if len(*args) is 0:
-                await context.send("Pong!")
             # If 1 argument is given ping someone his username once
-            elif len(*args) is 1:
+            if len(*args) == 1:
                 member = find_user(context, str(args[0]))
                 if member is not None:
                     await context.send("Ping! " + "<@" + str(member.id) + ">!")
                 else:
                     await context.send("Could not find the member you are asking for.")
             # If 2 arguments are given ping someone his username multiple times (based on parameter)
-            elif len(*args) is 2:
+            elif len(*args) == 2:
                 member = find_user(context, str(args[0]))
                 if member is not None:
                     if functions.is_int(args[1]):
@@ -36,7 +33,7 @@ class Ping(commands.Cog):
                     await context.send("Could not find the member you are asking for. Try using !ping [username] [amount]")
             # If none of the correct parameters are given do this.
             else:
-                await context.send("I don't understand what you are trying to do. Try using !ping [username] [amount]")
+                await context.send("Pong!")
 
     @commands.command(name='pong', description='Pong! (:')
     async def pong(self, context):
