@@ -8,6 +8,7 @@ else:
 PREFIX = "!"
 DESCRIPTION = "I am a humble bot."
 APPLICATION_ID = "833460245455044618"
+# Use --network="host" in Docker if the db runs locally
 DB_STRING = "mongodb://127.0.0.1:27017/"
 DB_NAME = "simplebot"
 # DB collections
