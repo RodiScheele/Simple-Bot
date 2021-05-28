@@ -49,7 +49,7 @@ class Roll(commands.Cog):
             if roll_db.get_roll_value(context.guild.id) is not None:
                 roll_goal = roll_db.get_roll_value(context.guild.id)['value']
                 dte = date.today().strftime('%Y-%m-%d')
-                roll_history = roll_db.get_roll_history(context.guild.id, dte)
+                roll_history = roll_db.get_roll_history_date(context.guild.id, dte)
                 not_rolled = True
                 prev_value = None
                 for user in roll_history:
@@ -115,13 +115,48 @@ class Roll(commands.Cog):
         if not context.author.bot:
             user_scores = roll_db.get_server_score(context.guild.id)
             user_scores_sorted = sorted(user_scores, key=itemgetter('score'), reverse=True)
-            await context.send("High scores:")
+
+            output_str = "```High Scores:\n"
             for user in user_scores_sorted:
                 point_str = " points"
                 if user['score'] == 1:
                     point_str = " point"
-                await context.send(str(user['score']) + point_str + " - " + str(user['user_name']))
-            await context.send("End of my list.")
+                output_str += str(user['score']) + point_str + " - " + str(user['user_name']) + "\n"
+            output_str += "```"
+
+            await context.send(output_str)
+
+    @commands.command(name='dailyrollstats', description="View the server stats for !dailyroll")
+    async def get_daily_roll_statistics(self, context):
+        """See the server stats for !dailyroll"""
+        if not context.author.bot:
+            rolls = roll_db.get_roll_history_all(context.guild.id)
+            total_rolls = rolls.count()
+            user_rolls = roll_db.get_roll_history_user(context.guild.id, context.author.id)
+            total_user_rolls = user_rolls.count()
+
+            roll_list = []
+            for roll in rolls:
+                roll_list.append(roll['value'])
+
+            if len(roll_list) != 0:
+                most_rolled_val = max(set(roll_list), key=roll_list.count)
+                most_rolled_val_count = roll_list.count(most_rolled_val)
+                target_roll_value = roll_db.get_roll_value(context.guild.id)['value']
+                target_rolls = roll_list.count(target_roll_value)
+            else:
+                most_rolled_val = 0
+                most_rolled_val_count = 0
+                target_roll_value = 0
+                target_rolls = 0
+
+            output_str = "```Dailyroll statistics.\n" \
+                         "Total rolls done on server: " + str(total_rolls) + "\n" \
+                         "Total rolls done by you: " + str(total_user_rolls) + "\n" \
+                         "Total rolls done on server for current target (" + str(target_roll_value) + "): " + str(target_rolls) + "\n" \
+                         "The most rolled value is " + str(most_rolled_val) + " which has been rolled a staggering " + str(most_rolled_val_count) + " times!" \
+                         "```"
+            await context.send(output_str)
 
 
 async def add_point(context):

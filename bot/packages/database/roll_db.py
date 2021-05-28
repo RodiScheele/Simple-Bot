@@ -27,9 +27,20 @@ def create_or_update_roll_value(server_id, value, date, user_id):
         col_val.insert_one(insert_value)
 
 
-def get_roll_history(server_id, date):
+def get_roll_history_date(server_id, date):
     lst = col_hist.find(filter={'server_id': server_id,
                                 'date': date})
+    return lst
+
+
+def get_roll_history_all(server_id):
+    lst = col_hist.find(filter={'server_id': server_id})
+    return lst
+
+
+def get_roll_history_user(server_id, user_id):
+    lst = col_hist.find(filter={'server_id': server_id,
+                                'user_id': user_id})
     return lst
 
 
