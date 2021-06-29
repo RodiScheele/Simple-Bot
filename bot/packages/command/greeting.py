@@ -24,11 +24,11 @@ class Greetings(commands.Cog):
                 await context.send('Hello {0.name}... This feels familiar.'.format(member))
             self._last_member = member
 
-    @commands.command(name="hello", descripion='Says hello!')
+    @commands.command(name="hello", description='Says hello!')
     async def hello_command(self, context):
         await self.hello(context)
 
-    @cog_ext.cog_slash(name="hello")
+    @cog_ext.cog_slash(name="hello", description='Says hello!')
     async def hello_slash(self, context):
         await self.hello(context)
 
