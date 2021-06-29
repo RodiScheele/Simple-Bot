@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord_slash import SlashCommand
 import logging
 import os
 from packages.files import config
@@ -15,30 +16,27 @@ logger.addHandler(handler)
 # Set up the bot
 intents = discord.Intents.default()
 intents.members = True
-client = commands.Bot(command_prefix=config.PREFIX, description=config.DESCRIPTION, intents=intents)
+bot = commands.Bot(command_prefix=config.PREFIX, description=config.DESCRIPTION, intents=intents)
+slash = SlashCommand(bot, sync_commands=True, sync_on_cog_reload=True)
 
-
-# Load all commands function
-def load_commands(bot):
-    for file in os.listdir('packages/command/'):
-        if file.endswith('.py') and not file.endswith('__init__.py'):
-            try:
-                bot.load_extension(f'packages.command.{file[:-3]}')
-            except (Exception, ArithmeticError) as e:
-                print("Could not load " + file)
-                template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-                print(template.format(type(e).__name__, e.args))
+# Load all commands
+for file in os.listdir('packages/command/'):
+    if file.endswith('.py') and not file.endswith('__init__.py'):
+        try:
+            bot.load_extension(f'packages.command.{file[:-3]}')
+        except (Exception, ArithmeticError) as e:
+            print("Could not load " + file)
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            print(template.format(type(e).__name__, e.args))
 
 
 # Code to run once the bot is logged in and ready
-@client.event
+@bot.event
 async def on_ready():
-    print("Logged in as {0.user}".format(client))
-    await client.change_presence(
+    print("Logged in as {0.user}".format(bot))
+    await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.playing, name='!help | Pretty sus'))
-    # Load the command_handler once the bot runs
-    load_commands(client)
 
 
 # Start the bot
-client.run(config.TOKEN)
+bot.run(config.TOKEN)

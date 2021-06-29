@@ -1,5 +1,6 @@
-from discord.ext import commands
 import discord
+from discord.ext import commands
+from discord_slash import cog_ext, SlashContext
 
 
 class Greetings(commands.Cog):
@@ -13,16 +14,23 @@ class Greetings(commands.Cog):
         if channel is not None:
             await channel.send('Welcome {0.mention}. I sure hope that you are not some kind of imposter?'.format(member))
 
-    @commands.command(name="hello", descripion='Says hello!')
-    async def hello(self, context, *, member: discord.Member = None):
+    async def hello(self, context):
         """Says hello"""
         if not context.author.bot:
-            member = member or context.author
+            member = context.author
             if self._last_member is None or self._last_member.id != member.id:
                 await context.send('Hello {0.name}~'.format(member))
             else:
                 await context.send('Hello {0.name}... This feels familiar.'.format(member))
             self._last_member = member
+
+    @commands.command(name="hello", descripion='Says hello!')
+    async def hello_command(self, context):
+        await self.hello(context)
+
+    @cog_ext.cog_slash(name="hello")
+    async def hello_slash(self, context):
+        await self.hello(context)
 
 
 def setup(bot):
