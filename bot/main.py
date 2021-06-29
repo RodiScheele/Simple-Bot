@@ -19,15 +19,17 @@ intents.members = True
 bot = commands.Bot(command_prefix=config.PREFIX, description=config.DESCRIPTION, intents=intents)
 slash = SlashCommand(bot, sync_commands=True, sync_on_cog_reload=True)
 
+
 # Load all commands
-for file in os.listdir('packages/command/'):
-    if file.endswith('.py') and not file.endswith('__init__.py'):
-        try:
-            bot.load_extension(f'packages.command.{file[:-3]}')
-        except (Exception, ArithmeticError) as e:
-            print("Could not load " + file)
-            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-            print(template.format(type(e).__name__, e.args))
+def load_commands():
+    for file in os.listdir('packages/command/'):
+        if file.endswith('.py') and not file.endswith('__init__.py'):
+            try:
+                bot.load_extension(f'packages.command.{file[:-3]}')
+            except (Exception, ArithmeticError) as e:
+                print("Could not load " + file)
+                template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+                print(template.format(type(e).__name__, e.args))
 
 
 # Code to run once the bot is logged in and ready
@@ -39,4 +41,5 @@ async def on_ready():
 
 
 # Start the bot
+load_commands()
 bot.run(config.TOKEN)
