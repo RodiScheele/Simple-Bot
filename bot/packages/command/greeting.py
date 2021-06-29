@@ -28,7 +28,7 @@ class Greetings(commands.Cog):
         await self.hello(context)
 
     @cog_ext.cog_slash(name="hello", description='Says hello!')
-    async def hello_slash(self, context):
+    async def hello_slash(self, context: SlashContext):
         await self.hello(context)
 
 
