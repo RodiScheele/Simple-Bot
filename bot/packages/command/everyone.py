@@ -12,7 +12,7 @@ class Everyone(commands.Cog):
             for member in context.channel.members:
                 if member.id and not member.bot:
                     member_list += "<@" + str(member.id) + "> "
-            await context.channel.send(member_list)
+            await context.send(member_list)
 
     @commands.command(name="everyone", description='Pings everyone by their name, alternative to @everyone')
     async def everyone_command(self, context):
