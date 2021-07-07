@@ -7,7 +7,6 @@ class Everyone(commands.Cog):
         self.bot = bot
 
     async def everyone(self, context):
-        """Pings everyone by their name"""
         if not context.author.bot:
             member_list = "PING PING PING "
             for member in context.channel.members:
@@ -17,10 +16,12 @@ class Everyone(commands.Cog):
 
     @commands.command(name="everyone", description='Pings everyone by their name, alternative to @everyone')
     async def everyone_command(self, context):
+        """Pings everyone by their name."""
         await self.everyone(context)
 
     @cog_ext.cog_slash(name="everyone", description='Pings everyone by their name, alternative to @everyone')
     async def everyone_slash(self, context: SlashContext):
+        """Pings everyone by their name."""
         await self.everyone(context)
 
 

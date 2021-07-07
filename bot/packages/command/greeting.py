@@ -14,7 +14,6 @@ class Greetings(commands.Cog):
             await channel.send('Welcome {0.mention}. I sure hope that you are not some kind of imposter?'.format(member))
 
     async def hello(self, context):
-        """Says hello"""
         if not context.author.bot:
             member = context.author
             if self._last_member is None or self._last_member.id != member.id:
@@ -25,10 +24,12 @@ class Greetings(commands.Cog):
 
     @commands.command(name="hello", description='Says hello!')
     async def hello_command(self, context):
+        """Says hello!"""
         await self.hello(context)
 
     @cog_ext.cog_slash(name="hello", description='Says hello!')
     async def hello_slash(self, context: SlashContext):
+        """Says hello!"""
         await self.hello(context)
 
 

@@ -9,7 +9,6 @@ class Insult(commands.Cog):
         self.bot = bot
 
     async def insult(self, context, arg):
-        """Insults you or someone else"""
         if not context.author.bot:
             insult_str = get_insult()
             output_text = None
@@ -25,12 +24,14 @@ class Insult(commands.Cog):
 
             await context.send(output_text)
 
-    @commands.command(name="insult", description="Insults you or someone else with '!insult [optional:name]'")
+    @commands.command(name="insult", description="Insults someone else with '!insult [name]'")
     async def insult_command(self, context, arg):
+        """Send an insult to someone."""
         await self.insult(context, arg)
 
-    @cog_ext.cog_slash(name="insult", description="Insults you or someone else with '!insult [optional:name]'")
+    @cog_ext.cog_slash(name="insult", description="Insults someone else with '/insult [name]'")
     async def insult_slash(self, context: SlashContext, arg):
+        """Send an insult to someone."""
         await self.insult(context, arg)
 
 
