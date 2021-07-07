@@ -4,17 +4,14 @@ from datetime import date
 from ..database import roll_db
 from ..logic import functions
 from operator import itemgetter
+from discord_slash import cog_ext, SlashContext
 
 
 class Roll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='roll', description="Roll a dice. The default dice is set between 1 and 100, you can "
-                                               "provide arguments to alter the dice with '!roll [maximum_value]' or "
-                                               "'!roll [minimum_value] [maximum_value]'")
     async def roll(self, context, *args):
-        """Roll a dice"""
         if not context.author.bot:
             output_text = None
 
@@ -41,9 +38,20 @@ class Roll(commands.Cog):
 
             await context.send(output_text)
 
-    @commands.command(name='dailyroll', description="Roll a dice between 1 and 100 and try to win the daily roll!")
+    @commands.command(name='roll', description="Roll a dice. The default dice is set between 1 and 100, you can "
+                                               "provide arguments to alter the dice with '!roll [maximum_value]' or "
+                                               "'!roll [minimum_value] [maximum_value]'")
+    async def roll_command(self, context, *args):
+        """Roll a dice"""
+        await self.roll(context, *args)
+
+    @cog_ext.cog_slash(name='roll', description="Roll a dice with '/roll "
+                                                "[maximum_value]' or '!roll [minimum_value] [maximum_value]'")
+    async def roll_slash(self, context: SlashContext, *args):
+        """Roll a dice"""
+        await self.roll(context, *args)
+
     async def daily_roll(self, context):
-        """Daily roll competition"""
         if not context.author.bot:
             output_text = None
             if roll_db.get_roll_value(context.guild.id) is not None:
@@ -80,9 +88,17 @@ class Roll(commands.Cog):
                 output_text = "Daily roll value has not been set yet. Use !setdailyroll [number] to set a value first."
             await context.send(output_text)
 
-    @commands.command(name='setdailyroll', description="Set the value for the daily roll.")
+    @commands.command(name='dailyroll', description="Roll a dice between 1 and 100 and try to win the daily roll!")
+    async def dailyroll_command(self, context):
+        """Compete in the daily roll!"""
+        await self.daily_roll(context)
+
+    @cog_ext.cog_slash(name='dailyroll', description="Roll a dice between 1 and 100 and try to win the daily roll!")
+    async def dailyroll_slash(self, context: SlashContext):
+        """Compete in the daily roll!"""
+        await self.daily_roll(context)
+
     async def set_daily_roll(self, context, arg1):
-        """Set the value for the daily roll competition"""
         if not context.author.bot:
             output_text = None
             if await functions.is_int(arg1):
@@ -97,9 +113,17 @@ class Roll(commands.Cog):
                               "number] "
             await context.send(output_text)
 
-    @commands.command(name='getdailyroll', description="Get the value for the daily roll.")
+    @commands.command(name='setdailyroll', description="Set the value for the daily roll.")
+    async def set_daily_roll_command(self, context, arg1):
+        """Set a value for the daily roll competition."""
+        await self.set_daily_roll(context, arg1)
+
+    @cog_ext.cog_slash(name='setdailyroll', description="Set the value for the daily roll.")
+    async def set_daily_roll_slash(self, context: SlashContext, arg1):
+        """Set a value for the daily roll competition."""
+        await self.set_daily_roll(context, arg1)
+
     async def get_daily_roll(self, context):
-        """Get the value for the daily roll competition."""
         if not context.author.bot:
             value = roll_db.get_roll_value(context.guild.id)
             if value is not None:
@@ -109,9 +133,17 @@ class Roll(commands.Cog):
                 output_text = "Daily roll value has not been set yet. Use !setdailyroll [number] to set a value first."
             await context.send(output_text)
 
-    @commands.command(name='dailyrollscore', description="See the current highscores for !dailyroll.")
+    @commands.command(name='getdailyroll', description="Get the value for the daily roll.")
+    async def get_daily_roll_command(self, context):
+        """Get the value for the daily roll competition."""
+        await self.get_daily_roll(context)
+
+    @cog_ext.cog_slash(name='getdailyroll', description="Get the value for the daily roll.")
+    async def get_daily_roll_slash(self, context: SlashContext):
+        """Get the value for the daily roll competition."""
+        await self.get_daily_roll(context)
+
     async def get_daily_roll_score(self, context):
-        """See the current highscores for !dailyroll."""
         if not context.author.bot:
             user_scores = roll_db.get_server_score(context.guild.id)
             user_scores_sorted = sorted(user_scores, key=itemgetter('score'), reverse=True)
@@ -126,9 +158,17 @@ class Roll(commands.Cog):
 
             await context.send(output_str)
 
-    @commands.command(name='dailyrollstats', description="View the server stats for !dailyroll")
+    @commands.command(name='dailyrollscore', description="See the current scores for !dailyroll.")
+    async def get_daily_roll_score_command(self, context):
+        """See the current highscores for dailyroll."""
+        await self.get_daily_roll_score(context)
+
+    @cog_ext.cog_slash(name='dailyrollscore', description="See the current scores for dailyroll.")
+    async def get_daily_roll_score_slash(self, context: SlashContext):
+        """See the current highscores for dailyroll."""
+        await self.get_daily_roll_score(context)
+
     async def get_daily_roll_statistics(self, context):
-        """See the server stats for !dailyroll"""
         if not context.author.bot:
             rolls = roll_db.get_roll_history_all(context.guild.id)
             total_rolls = rolls.count()
@@ -157,6 +197,16 @@ class Roll(commands.Cog):
                          "The most rolled value is " + str(most_rolled_val) + " which has been rolled a staggering " + str(most_rolled_val_count) + " times!" \
                          "```"
             await context.send(output_str)
+
+    @commands.command(name='dailyrollstats', description="View the server stats for dailyroll")
+    async def get_daily_roll_statistics_command(self, context):
+        """See the server stats for !dailyroll"""
+        await self.get_daily_roll_statistics(context)
+
+    @cog_ext.cog_slash(name='dailyrollstats', description="View the server stats for dailyroll")
+    async def get_daily_roll_statistics_slash(self, context: SlashContext):
+        """See the server stats for !dailyroll"""
+        await self.get_daily_roll_statistics(context)
 
 
 async def add_point(context):
