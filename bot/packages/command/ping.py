@@ -27,9 +27,9 @@ class Ping(commands.Cog):
                                 await context.send("So much spam...")
                                 break
                     else:
-                        await context.send("You need to set a number. Try using !ping [username] [amount]")
+                        await context.send("You need to set a number. Try using ping [username] [amount]")
                 else:
-                    await context.send("I could not find that member. Try using !ping [username] [amount]")
+                    await context.send("I could not find that member. Try using ping [username] [amount]")
             # If none of the correct parameters are given do this.
             else:
                 await context.send("Pong.")
@@ -40,8 +40,9 @@ class Ping(commands.Cog):
         await self.ping(context, *args)
 
     @cog_ext.cog_slash(name="ping", description="Ping! :)")
-    async def ping_slash(self, context: SlashContext, *args):
+    async def ping_slash(self, context: SlashContext, arg1, arg2):
         """Ping someone!"""
+        args = (arg1, arg2)
         await self.ping(context, *args)
 
     async def pong(self, context):
