@@ -45,10 +45,10 @@ class Roll(commands.Cog):
         """Roll a dice"""
         await self.roll(context, *args)
 
-    @cog_ext.cog_slash(name='roll', description="Roll a dice with '/roll "
-                                                "[maximum_value]' or '!roll [minimum_value] [maximum_value]'")
-    async def roll_slash(self, context: SlashContext, *args):
+    @cog_ext.cog_slash(name='roll', description="Roll a dice with '/roll [minimum_value] [maximum_value]' or '!roll")
+    async def roll_slash(self, context: SlashContext, arg1, arg2):
         """Roll a dice"""
+        args = (arg1, arg2)
         await self.roll(context, *args)
 
     async def daily_roll(self, context):
