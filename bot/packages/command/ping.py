@@ -1,14 +1,13 @@
 from discord.ext import commands
 from ..logic import functions
+from discord_slash import cog_ext, SlashContext
 
 
 class Ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='ping', description='Ping! :)')
     async def ping(self, context, *args):
-        """Do a ping!"""
         if not context.author.bot:
             # If 1 argument is given ping someone his username once
             if len(args) == 1:
@@ -35,11 +34,29 @@ class Ping(commands.Cog):
             else:
                 await context.send("Pong.")
 
-    @commands.command(name='pong', description='Pong! (:')
+    @commands.command(name="ping", description="Ping! :)")
+    async def ping_command(self, context, *args):
+        """Ping someone!"""
+        await self.ping(context, *args)
+
+    @cog_ext.cog_slash(name="ping", description="Ping! :)")
+    async def ping_slash(self, context: SlashContext, *args):
+        """Ping someone!"""
+        await self.ping(context, *args)
+
     async def pong(self, context):
-        """Do a pong!"""
         if not context.author.bot:
             await context.send("Ping!")
+
+    @commands.command(name='pong', description='Pong! (:')
+    async def pong_command(self, context):
+        """Do a pong!"""
+        await self.pong(context)
+
+    @cog_ext.cog_slash(name='pong', description='Pong! (:')
+    async def pong_slash(self, context: SlashContext, *args):
+        """Do a pong!"""
+        await self.pong(context)
 
 
 def find_user(context, username):
