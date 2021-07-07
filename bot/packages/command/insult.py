@@ -14,7 +14,7 @@ class Insult(commands.Cog):
             output_text = None
 
             match = False
-            for member in context.message.guild.members:
+            for member in context.guild.members:
                 if arg.lower() == member.name.lower() or arg.lower() == member.display_name.lower():
                     match = True
                     output_text = "<@" + str(member.id) + "> " + insult_str
