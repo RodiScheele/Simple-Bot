@@ -168,7 +168,7 @@ class Roll(commands.Cog):
         """See the current highscores for dailyroll."""
         await self.get_daily_roll_score(context)
 
-    async def get_daily_roll_statistics(self, context):
+    async def daily_roll_statistics(self, context):
         if not context.author.bot:
             rolls = roll_db.get_roll_history_all(context.guild.id)
             total_rolls = rolls.count()
@@ -199,15 +199,46 @@ class Roll(commands.Cog):
             await context.send(output_str)
 
     @commands.command(name='dailyrollstats', description="View the server stats for dailyroll")
-    async def get_daily_roll_statistics_command(self, context):
+    async def daily_roll_statistics_command(self, context):
         """See the server stats for !dailyroll"""
-        await self.get_daily_roll_statistics(context)
+        await self.daily_roll_statistics(context)
 
     @cog_ext.cog_slash(name='dailyrollstats', description="View the server stats for dailyroll")
-    async def get_daily_roll_statistics_slash(self, context: SlashContext):
+    async def daily_roll_statistics_slash(self, context: SlashContext):
         """See the server stats for !dailyroll"""
-        await self.get_daily_roll_statistics(context)
+        await self.daily_roll_statistics(context)
 
+    async def daily_roll_breakdown(self, context):
+        if not context.author.bot:
+            rolls = roll_db.get_roll_history_all(context.guild.id)
+            user_rolls = roll_db.get_roll_history_user(context.guild.id, context.author.id)
+
+            roll_list = []
+            for roll in rolls:
+                roll_list.append(roll['value'])
+
+            roll_dict = dict()
+            for roll in roll_list:
+                if roll in roll_dict:
+                    roll_dict[roll] += 1
+                else:
+                    roll_dict[roll] = 1
+
+            output_str = "```"
+            for key, value in roll_dict.items():
+                output_str = output_str + str(key) + " : " + str(value) + "\n"
+            output_str = output_str + "```"
+            await context.send(output_str)
+
+    @commands.command(name='dailyrollbreakdown', description="View the server breakdown for dailyroll")
+    async def daily_roll_breakdown_command(self, context):
+        """View the server breakdown for !dailyroll"""
+        await self.daily_roll_breakdown(context)
+
+    @cog_ext.cog_slash(name='dailyrollbreakdown', description="View the server breakdown for dailyroll")
+    async def daily_roll_breakdown_slash(self, context: SlashContext):
+        """View the server breakdown for !dailyroll"""
+        await self.daily_roll_breakdown(context)
 
 async def add_point(context):
     user_score = roll_db.get_user_score(context.guild.id, context.author.id)

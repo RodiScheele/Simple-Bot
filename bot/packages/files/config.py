@@ -2,9 +2,9 @@ import os
 
 # The bot token can be configured as an environment variable or hardcoded (If you give no shit about security).
 if os.getenv('DISCORD_TOKEN') != 0:
-    #TOKEN = os.getenv('DISCORD_TOKEN')
+    TOKEN = os.getenv('DISCORD_TOKEN')
     # dev token
-    TOKEN = os.getenv('DEV_TOKEN')
+    #TOKEN = os.getenv('DEV_TOKEN')
 else:
     TOKEN = ""
 PREFIX = "!"
