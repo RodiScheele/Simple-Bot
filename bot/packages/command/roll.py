@@ -211,7 +211,6 @@ class Roll(commands.Cog):
     async def daily_roll_breakdown(self, context):
         if not context.author.bot:
             rolls = roll_db.get_roll_history_all(context.guild.id)
-            user_rolls = roll_db.get_roll_history_user(context.guild.id, context.author.id)
 
             roll_list = []
             for roll in rolls:
@@ -239,6 +238,7 @@ class Roll(commands.Cog):
     async def daily_roll_breakdown_slash(self, context: SlashContext):
         """View the server breakdown for !dailyroll"""
         await self.daily_roll_breakdown(context)
+
 
 async def add_point(context):
     user_score = roll_db.get_user_score(context.guild.id, context.author.id)
