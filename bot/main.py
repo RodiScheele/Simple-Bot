@@ -37,7 +37,7 @@ def load_commands():
 async def on_ready():
     print("Logged in as {0.user}".format(bot))
     await bot.change_presence(
-        activity=discord.Activity(type=discord.ActivityType.playing, name='!help | Pretty sus'))
+        activity=discord.Activity(type=discord.ActivityType.playing, name='PING PING PING!'))
 
 
 # Start the bot

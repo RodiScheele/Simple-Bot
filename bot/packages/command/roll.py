@@ -223,9 +223,16 @@ class Roll(commands.Cog):
                 else:
                     roll_dict[roll] = 1
 
+            sorted_dict = dict(sorted(roll_dict.items(), key=itemgetter(0)))
+
             output_str = "```"
-            for key, value in roll_dict.items():
-                output_str = output_str + str(key) + " : " + str(value) + "\n"
+            for key, value in sorted_dict.items():
+                blank_space = ""
+                if key < 10:
+                    blank_space = "  "
+                elif key < 100:
+                    blank_space = " "
+                output_str = output_str + blank_space + str(key) + " : " + str(value) + "\n"
             output_str = output_str + "```"
             await context.send(output_str)
 
